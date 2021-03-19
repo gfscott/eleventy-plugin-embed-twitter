@@ -130,10 +130,10 @@ validStrings.forEach(function(obj) {
 	test(
 		`${obj.type} default embed, do not track`,
 		(t) => {
-			const darkTheme = {
+			const doNotTrack = {
 				doNotTrack: true,
 			};
-			const customOpt = merge(pluginDefaults, darkTheme);
+			const customOpt = merge(pluginDefaults, doNotTrack);
 			const idealCase = `<p>${obj.str}</p>`;
 			const tweetObj = extractMatch(idealCase);
 			const output = buildEmbed(tweetObj, customOpt, 0);
