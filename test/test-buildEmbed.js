@@ -122,6 +122,27 @@ validStrings.forEach(function(obj) {
 		},
 	);
 });
+
+/**
+ * TEST: Build script returns expected HTML string, do not track
+ */
+validStrings.forEach(function(obj) {
+	test(
+		`${obj.type} default embed, do not track`,
+		(t) => {
+			const darkTheme = {
+				doNotTrack: true,
+			};
+			const customOpt = merge(pluginDefaults, darkTheme);
+			const idealCase = `<p>${obj.str}</p>`;
+			const tweetObj = extractMatch(idealCase);
+			const output = buildEmbed(tweetObj, customOpt, 0);
+			const expected = '<div class="eleventy-plugin-embed-twitter"><blockquote id="tweet-1289865845053652994" class="twitter-tweet" data-dnt="true"><a href="https://twitter.com/SaraSoueidan/status/1289865845053652994"></a></blockquote></div><script src="https://platform.twitter.com/widgets.js" charset="utf-8" async></script>';
+			t.is(output, expected);
+		},
+	);
+});
+
 /**
  * TEST: Build script returns expected oEmbed HTML string, given valid input with oembed option active
  */
@@ -199,8 +220,28 @@ validStrings.forEach(function(obj) {
 });
 
 /**
+ * TEST: Build script returns expected oEmbed HTML string with do not track.
+ */
+validStrings.forEach(function(obj) {
+	test(
+		`${obj.type} cached oembed behavior, do not track`,
+		async (t) => {
+			const oEmbedOption = merge(pluginDefaults, {
+				cacheText: true,
+				doNotTrack: true,
+			});
+			const idealCase = `<p>${obj.str}</p>`;
+			const tweetObj = extractMatch(idealCase);
+			const output = await buildEmbed(tweetObj, oEmbedOption, 0);
+			const expected = '<div class="eleventy-plugin-embed-twitter"><blockquote class="twitter-tweet" data-dnt="true"><p lang="en" dir="ltr">I&#39;ve been increasingly feeling like Grid or Flex has become the new Tabs or Spaces.</p>&mdash; Sara Soueidan (@SaraSoueidan) <a href="https://twitter.com/SaraSoueidan/status/1289865845053652994?ref_src=twsrc%5Etfw">August 2, 2020</a></blockquote>\n<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>\n</div>';
+			t.is(output, expected);
+		},
+	);
+});
+
+/**
  * TEST: Build script returns unaltered URL if oEmbed network response ≠ 200
- * Note: the bent library is configured to throw an error on anything other 
+ * Note: the bent library is configured to throw an error on anything other
  * than 200, so the exact error code _should_ be irrelevant for this plugin.
  */
 validStrings.forEach(function(obj) {
