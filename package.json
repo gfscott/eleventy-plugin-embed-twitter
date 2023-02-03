@@ -40,6 +40,6 @@
   },
   "dependencies": {
     "@11ty/eleventy-cache-assets": "^2.3.0",
-    "deepmerge": "^4.2.2"
+    "deepmerge": "^4.3.0"
   }
 }
